@@ -1,0 +1,3 @@
+/Users/cairunqing/Learning/Advanced Architecture/Project1/Project_Draft/cmake-build-debug/CMakeFiles/Project_Draft.dir
+/Users/cairunqing/Learning/Advanced Architecture/Project1/Project_Draft/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/cairunqing/Learning/Advanced Architecture/Project1/Project_Draft/cmake-build-debug/CMakeFiles/rebuild_cache.dir
