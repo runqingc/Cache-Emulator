@@ -19,7 +19,8 @@ int Address::getIndex() const {
 }
 
 int Address::getTag() const {
-    return (address >> offsetSize) & ((1<< tagSize)-1);
+    return (address >> (offsetSize + indexSize));
+//    return (address >> offsetSize) & ((1<< tagSize)-1);
 }
 
 int Address::getOffset() const {

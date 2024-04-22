@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <string>
 #include <algorithm>
+#include <cassert>
 
 #include "Address.h"
 #include "DataBlock.h"
@@ -50,7 +51,7 @@ void parseInput(int argc, char** argv){
     associativity = 2;
     replacement = ReplacementPolicy::LRU;
     algorithm = AlgorithmPolicy::mxm_block;  // [TODO] change back to mxm_block back !
-    printEnabled = false;
+    printEnabled = true;
     dimension = 480;
     blockingFactor = 32;
 
@@ -99,7 +100,7 @@ void initializeEmulator(){
     Cache::numSets = Cache::numBlocks / associativity;  // suppose divisible!
 
     // initialize Address
-    Address::indexSize = std::ceil(std::log(Cache::numBlocks) / std::log(2));
+    Address::indexSize = std::ceil(std::log(Cache::numSets) / std::log(2));
     Address::offsetSize = std::ceil(std::log(DataBlock::size) / std::log(2));
     Address::tagSize = addressSize - Address::indexSize - Address::offsetSize;
 
@@ -277,6 +278,9 @@ void emulateMxm(){
 }
 
 void emulateMxmBlock(){
+
+
+
     // emulate C = A * B
     // construct matrix of address
     std::vector<std::vector<Address>>
@@ -287,13 +291,18 @@ void emulateMxmBlock(){
     constructMatrix(a, b, c);
 
     // run block mxm
-    double register1, register2, register3, register4;
+    double register1, register2, register3, register4, tmp;
     int i, j, k, jj, kk;
     for(jj=0; jj<dimension; jj+=blockingFactor){
         for(kk=0; kk<dimension; kk+=blockingFactor){
             for(i=0; i<dimension; ++i){
                 for(j=jj; j<min(jj+blockingFactor, dimension); ++j){
                     register1 = cpu->loadDouble(c[i][j]);  // Load directly to register1
+//                    if((int)register1%32!=0 ){
+//                        int v1 = cpu->loadDouble(c[i][j]);
+//                        int v2 = ram->getDouble(c[i][j]);
+//                        cout << v1 << " " << v2 << endl;
+//                    }
                     for(k=kk; k<min(kk+blockingFactor, dimension); ++k){
                         register2 = cpu->loadDouble(a[i][k]);
                         register3 = cpu->loadDouble(b[k][j]);
@@ -301,6 +310,9 @@ void emulateMxmBlock(){
                         register1 = cpu->addDouble(register1, register4);
                     }
                     cpu->storeDouble(c[i][j], register1);  // Store from register1
+//                    if((int)register1%32!=0  || (int)(ram->getDouble(c[i][j]))%32!=0 ){
+//                        cout << register1 << endl;
+//                    }
                 }
             }
         }
@@ -310,6 +322,9 @@ void emulateMxmBlock(){
     for(i=0; i<dimension; ++i){
         for(j=0; j<dimension; ++j){
             assert(ram->getDouble(c[i][j]) == dimension);
+//            if(ram->getDouble(c[i][j])!=dimension){
+//                cout << ram->getDouble(c[i][j]) << endl;
+//            }
         }
     }
 
