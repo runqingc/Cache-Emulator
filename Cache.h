@@ -40,6 +40,7 @@ public:
     virtual std::shared_ptr<DataBlock> getBlock(Address address) = 0;
     double getDouble(Address address);
     virtual void setDouble(Address address, double value) = 0;
+    virtual ~Cache() = default;
 };
 
 

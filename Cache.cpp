@@ -49,7 +49,7 @@ std::shared_ptr<DataBlock> RandomCache::getBlock(Address address){
     int tag = address.getTag();
     int firstEmptyIndex = -1;
     // Case 1: find in cache
-    for(int i=0; i<blocks[setIndex].size(); ++i){
+    for(int i=0; i<(int)blocks[setIndex].size(); ++i){
         if(firstEmptyIndex == -1 && !blocks[setIndex][i]->valid){
             firstEmptyIndex = i;
         }else if(blocks[setIndex][i]->valid && blocks[setIndex][i]->tag == tag){
@@ -81,7 +81,7 @@ void RandomCache::setDouble(Address address, double value){
     int offset = address.getOffset();
     int firstEmptyIndex = -1;
     // Case 1: find in cache
-    for(int i=0; i<blocks[setIndex].size(); ++i){
+    for(int i=0; i<(int)blocks[setIndex].size(); ++i){
         if(firstEmptyIndex == -1 && !blocks[setIndex][i]->valid){
             firstEmptyIndex = i;
         }else if(blocks[setIndex][i]->valid && blocks[setIndex][i]->tag == tag){
@@ -129,7 +129,7 @@ std::shared_ptr<DataBlock> LRUCache::getBlock(Address address){
     ++readMiss;
     std::shared_ptr<DataBlock> res = ram->getBlock(address);
     // case 2: not found in cache, yet cache has empty block
-    if(blocks[setIndex].size()< numBlocks/numSets){
+    if((int)blocks[setIndex].size()< numBlocks/numSets){
         blocks[setIndex].emplace_front(std::make_shared<CacheEntry>(true, tag, std::move(res)));
         return blocks[setIndex].front()->data;
     }
@@ -161,7 +161,7 @@ void LRUCache::setDouble(Address address, double value){
     ++writeMiss;
     std::shared_ptr<DataBlock> res = ram->getBlock(address);
     // case 2: not found in cache, yet cache has empty block
-    if(blocks[setIndex].size()< numBlocks/numSets){
+    if((int)blocks[setIndex].size()< numBlocks/numSets){
         blocks[setIndex].emplace_front(std::make_shared<CacheEntry>(true, tag, std::move(res)));
         blocks[setIndex].front()->data->data[offset] = value;
         return;

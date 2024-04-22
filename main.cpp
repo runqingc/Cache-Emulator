@@ -46,7 +46,7 @@ void parseInput(int argc, char** argv){
 
 
     // default settings
-    cacheSize = 65536;
+    cacheSize = 524288;
     dataBlockSize = 64;   // first /8 then*8? keep it as a multiple of 8
     associativity = 2;
     replacement = ReplacementPolicy::LRU;
